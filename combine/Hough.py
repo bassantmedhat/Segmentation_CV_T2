@@ -127,7 +127,7 @@ def line_detection(source: np.ndarray):
     return accumulator, rhos, thetas
 
 
-def hough_lines(source: np.ndarray, num_peaks: int = 10) -> np.ndarray:
+def hough_lines(source: np.ndarray, num_peaks: int = 10) :
     """
 
     :param source:

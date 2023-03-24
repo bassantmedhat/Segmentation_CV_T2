@@ -8,6 +8,12 @@ from skimage.transform import hough_ellipse
 from skimage.draw import ellipse_perimeter
 
 def hough_ellipse(img, threshold=4, accuracy=1, min_size=4, max_size=None):
+    image_rgb = img
+    img = color.rgb2gray(img)
+    img = canny(img, sigma=2.0,
+              low_threshold=0.55, high_threshold=0.8)
+
+    
     if img.ndim != 2:
         raise ValueError('The input image must be 2D.')
 
@@ -79,39 +85,54 @@ def hough_ellipse(img, threshold=4, accuracy=1, min_size=4, max_size=None):
                         results.append((hist_max, yc, xc, a, b, orientation))
                     acc = []
 
-    return np.array(results, dtype=[('accumulator', np.intp),
+    result = np.array(results, dtype=[('accumulator', np.intp),
                                     ('yc', np.float64),
                                     ('xc', np.float64),
                                     ('a', np.float64),
                                     ('b', np.float64),
                                     ('orientation', np.float64)])
+
+    result.sort(order='accumulator')
+    best = list(result[-1])
+    yc, xc, a, b = (int(round(x)) for x in best[1:5])
+    orientation = best[5]
+
+
+
+    # Draw the ellipse on the original image with thicker lines
+    for offset in range(-2, 3):
+        cy, cx = ellipse_perimeter(yc + offset, xc + offset, a, b, orientation)
+        image_rgb[cy, cx] = (0, 0, 255)
+
+
+    return image_rgb
     
 
-image_rgb = data.coffee()[0:220, 160:420]
-image_gray = color.rgb2gray(image_rgb)
-edges = canny(image_gray, sigma=2.0,
-              low_threshold=0.55, high_threshold=0.8)
-result = hough_ellipse(edges, accuracy=20, threshold=250,
-                       min_size=100, max_size=120)
-result.sort(order='accumulator')
+# image_rgb = data.coffee()[0:220, 160:420]
+# image_gray = color.rgb2gray(image_rgb)
+# edges = canny(image_gray, sigma=2.0,
+#               low_threshold=0.55, high_threshold=0.8)
+# result = hough_ellipse(edges, accuracy=20, threshold=250,
+#                        min_size=100, max_size=120)
+# result.sort(order='accumulator')
 
 
 
-### super impose
+# ### super impose
 
 
-# Estimated parameters for the ellipse
-best = list(result[-1])
-yc, xc, a, b = (int(round(x)) for x in best[1:5])
-orientation = best[5]
+# # Estimated parameters for the ellipse
+# best = list(result[-1])
+# yc, xc, a, b = (int(round(x)) for x in best[1:5])
+# orientation = best[5]
 
 
 
-# Draw the ellipse on the original image with thicker lines
-for offset in range(-2, 3):
-    cy, cx = ellipse_perimeter(yc + offset, xc + offset, a, b, orientation)
-    image_rgb[cy, cx] = (0, 0, 255)
+# # Draw the ellipse on the original image with thicker lines
+# for offset in range(-2, 3):
+#     cy, cx = ellipse_perimeter(yc + offset, xc + offset, a, b, orientation)
+#     image_rgb[cy, cx] = (0, 0, 255)
 
-# Display the image with the thicker ellipse
-plt.imshow(image_rgb)
-plt.show()
+# # Display the image with the thicker ellipse
+# plt.imshow(image_rgb)
+# plt.show()

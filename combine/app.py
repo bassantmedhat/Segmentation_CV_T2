@@ -362,40 +362,44 @@ elif chosen_id == "tab5":
 
     input_image, output_image = st.columns(2)
     # Load image
-    if my_upload is not None:
-        image = Image.open(my_upload).convert("L")
-        # image = data.astronaut()
-        img = rgb2gray(image) 
+    # if my_upload is not None:
+    #     image = Image.open(my_upload).convert("L")
+    image = data.astronaut()
+    img = rgb2gray(image) 
 
 
 
-        s = np.linspace(0, 2*np.pi, 400)
-        r = 100 + 100*np.sin(s)
-        c = 220 + 100*np.cos(s)
-        init = np.array([r, c]).T
+    s = np.linspace(0, 2*np.pi, 400)
+    r = 100 + 100*np.sin(s)
+    c = 220 + 100*np.cos(s)
+    init = np.array([r, c]).T
 
 
 
-        # Display input image
-        snake = contour.active_contour(gaussian(img, 3, preserve_range=False),
-                        init, alpha=0.015, beta=10, gamma=0.001)
+    # Display input image
+    snake = contour.active_contour(gaussian(img, 3, preserve_range=False),
+                    init, alpha=0.015, beta=10, gamma=0.001)
 
-        fig, ax = plt.subplots()
-        ax.imshow(image)
-        ax.plot(snake[:, 1], snake[:, 0], '-b', lw=3)
-        # Save the plot as an image file
-        fig.savefig('images/snake.png')
-        with input_image:
-            st.markdown('<p style="text-align: center;">Input Image</p>', unsafe_allow_html=True)
-            st.image(image, width=190)
+    fig, ax =plt.subplots(figsize=(7, 7))
+    ax.imshow(image)
+    ax.plot(snake[:, 1], snake[:, 0], '-b', lw=3)
+    # Save the plot as an image file
+    fig.savefig('images/snake.png')
+    with input_image:
+        st.markdown('<p style="text-align: center;">Input Image</p>', unsafe_allow_html=True)
+        st.image(image, width=190)
 
-        # Add noise
-        with output_image:
+    # Add noise
+    with output_image:
 
-            st.markdown(f'<p style="text-align: center;">Noisy Image ()</p>', unsafe_allow_html=True)
-            # image_with_countour = Contour.main()
-            image_with_countour=cv2.imread('images/snake.png')
-            st.image(image_with_countour, width=190)
+        st.markdown(f'<p style="text-align: center;">Noisy Image ()</p>', unsafe_allow_html=True)
+        # image_with_countour = Contour.main()
+        image_with_countour=cv2.imread('images/snake.png')
+        st.image(image_with_countour, width=190)
+
+
+
+
 
 
     

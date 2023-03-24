@@ -132,6 +132,34 @@ def active_contour(image, snake, alpha=0.01, beta=0.1,
 
 
 
+def calculate_chain_code(snake):
+    chain_code = []
+    for i in range(len(snake)):
+        x1, y1 = snake[i-1]
+        x2, y2 = snake[i]
+        dx = x2 - x1
+        dy = y2 - y1
+        if dx == 0:
+            if dy > 0:
+                code = 0
+            else:
+                code = 4
+        elif dx > 0:
+            if dy == 0:
+                code = 2
+            elif dy > 0:
+                code = 1
+            else:
+                code = 7
+        else:
+            if dy == 0:
+                code = 6
+            elif dy > 0:
+                code = 5
+            else:
+                code = 3
+        chain_code.append(code)
+    return chain_code
 
 
 

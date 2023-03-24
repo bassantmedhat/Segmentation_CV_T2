@@ -379,7 +379,9 @@ elif chosen_id == "tab5":
     # Display input image
     snake = contour.active_contour(gaussian(img, 3, preserve_range=False),
                     init, alpha=0.015, beta=10, gamma=0.001)
+    chain_code = contour.calculate_chain_code(snake)
 
+    st.write(chain_code)
     fig, ax =plt.subplots(figsize=(7, 7))
     ax.imshow(image)
     ax.plot(snake[:, 1], snake[:, 0], '-b', lw=3)
